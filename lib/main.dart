@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'services/shared_prefs.dart';
-import 'screens/home/shared_pref1.dart';
+import 'providers/user_provider.dart';
+import 'screens/home/shared_pref2.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefsService.init();
-  runApp(const MyApp());
+  
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +27,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => SharedPref1(),
+        '/': (context) => SharedPref2(),
       },
     );
   }
