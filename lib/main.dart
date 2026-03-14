@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'services/shared_prefs.dart';
-import 'providers/user_provider.dart';
-import 'screens/home/shared_pref2.dart';
+import 'services/shared_pref2.dart';
+import 'providers/user_provider2.dart';
+import 'screens/home/shared_pref3.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefsService.init();
-  
+
   runApp(
     MultiProvider(
       providers: [
