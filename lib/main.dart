@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'services/shared_pref2.dart';
-import 'providers/user_provider2.dart';
-import 'screens/home/shared_pref3.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter2/models/user1.dart';
+import 'package:flutter2/screens/isar_learning/user_page1.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefsService.init();
+  final dir = await getApplicationDocumentsDirectory();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  final isar = await Isar.open([User1Schema], directory: dir.path);
+
+  runApp(IsarRouterApp(isar: isar));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class IsarRouterApp extends StatelessWidget {
+  final Isar isar;
+  const IsarRouterApp({super.key, required this.isar});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/', 
       routes: {
-        '/': (context) => SharedPref2(),
+        '/': (context) => UserPage(isar: isar),
       },
     );
   }
