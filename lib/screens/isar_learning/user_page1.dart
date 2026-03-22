@@ -14,10 +14,12 @@ class _UserPageState extends State<UserPage> {
   List<User1> userList = [];
   final TextEditingController _controller = TextEditingController();
 
+  User1? _editingUser;
+
   @override
   void initState() {
     super.initState();
-    _readUsers(); 
+    _readUsers();
   }
 
   void _readUsers() async {
@@ -25,38 +27,28 @@ class _UserPageState extends State<UserPage> {
     setState(() => userList = results);
   }
 
-  void _createUser() async {
+  void _saveUser() async {
     if (_controller.text.isEmpty) return;
 
-    final newUser = User1()..name = _controller.text;
-    await widget.isar.writeTxn(() => widget.isar.user1s.put(newUser));
+    if (_editingUser == null) {
+      final newUser = User1()..name = _controller.text;
+      await widget.isar.writeTxn(() => widget.isar.user1s.put(newUser));
+    } else {
+      _editingUser!.name = _controller.text;
+      await widget.isar.writeTxn(() => widget.isar.user1s.put(_editingUser!));
+
+      _editingUser = null;
+    }
 
     _controller.clear();
-    _readUsers(); 
+    _readUsers();
   }
 
-  void _updateUser(User1 user) async {
-    _controller.text = user.name; 
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Beddel Magaca"),
-        content: TextField(controller: _controller),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              user.name = _controller.text;
-              await widget.isar.writeTxn(() => widget.isar.user1s.put(user));
-              _controller.clear();
-              Navigator.pop(context);
-              _readUsers();
-            },
-            child: const Text("Save"),
-          ),
-        ],
-      ),
-    );
+  void _setUpdateMode(User1 user) {
+    setState(() {
+      _editingUser = user;
+      _controller.text = user.name;
+    });
   }
 
   void _deleteUser(int id) async {
@@ -67,7 +59,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Isar Basic CRUD")),
+      appBar: AppBar(title: const Text("Isar Inline CRUD")),
       body: Column(
         children: [
           Padding(
@@ -77,10 +69,33 @@ class _UserPageState extends State<UserPage> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: const InputDecoration(hintText: "Enter Name"),
+                    decoration: InputDecoration(
+                      hintText: "Enter Name",
+                      labelText: _editingUser == null
+                          ? "Add User"
+                          : "Update User",
+                      suffixIcon: _editingUser != null
+                          ? IconButton(
+                              icon: const Icon(Icons.cancel),
+                              onPressed: () {
+                                setState(() {
+                                  _editingUser = null;
+                                  _controller.clear();
+                                });
+                              },
+                            )
+                          : null,
+                    ),
                   ),
                 ),
-                IconButton(icon: const Icon(Icons.add), onPressed: _createUser),
+                IconButton(
+                  icon: Icon(
+                    _editingUser == null ? Icons.add : Icons.check_circle,
+                    color: _editingUser == null ? Colors.blue : Colors.green,
+                    size: 30,
+                  ),
+                  onPressed: _saveUser,
+                ),
               ],
             ),
           ),
@@ -96,7 +111,9 @@ class _UserPageState extends State<UserPage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.green),
-                        onPressed: () => _updateUser(user),
+                        onPressed: () => _setUpdateMode(
+                          user,
+                        ), 
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
