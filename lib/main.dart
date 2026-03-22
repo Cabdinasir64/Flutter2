@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter2/models/user1.dart';
-import 'package:flutter2/screens/isar_learning/user_page1.dart';
+import 'models/user2.dart';
+import 'package:flutter2/screens/isar_learning/user2_list_page.dart';
+import 'package:flutter2/screens/isar_learning/user2_details_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open([User2Schema], directory: dir.path);
 
-  final isar = await Isar.open([User1Schema], directory: dir.path);
-
-  runApp(IsarRouterApp(isar: isar));
-}
-
-class IsarRouterApp extends StatelessWidget {
-  final Isar isar;
-  const IsarRouterApp({super.key, required this.isar});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/', 
-      routes: {
-        '/': (context) => UserPage(isar: isar),
-      },
-    );
-  }
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    initialRoute: '/',
+    routes: {
+      '/': (context) => User2ListPage(isar: isar),
+      '/details': (context) => User2DetailsPage(isar: isar),
+    },
+  ));
 }
