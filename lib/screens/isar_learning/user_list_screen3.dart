@@ -16,9 +16,6 @@ class _UserListScreenState extends State<UserListScreen> {
 
   void _loadUsers() async {
     final results = await widget.isar.user3s.where().findAll();
-    for (var user in results) {
-      await user.posts.load();
-    }
     setState(() => users = results);
   }
 
