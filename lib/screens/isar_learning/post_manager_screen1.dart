@@ -26,7 +26,7 @@ class _PostManagerScreenState extends State<PostManagerScreen> {
   void _loadUser(int id) async {
     final result = await widget.isar.user3s.get(id);
     if (result != null) {
-      await result.posts.load(); 
+      await result.posts.load();
       setState(() => user = result);
     }
   }
@@ -46,7 +46,7 @@ class _PostManagerScreenState extends State<PostManagerScreen> {
 
     _titleController.clear();
     _contentController.clear();
-    _loadUser(user!.id); 
+    _loadUser(user!.id);
   }
 
   @override
@@ -59,9 +59,18 @@ class _PostManagerScreenState extends State<PostManagerScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                TextField(controller: _titleController, decoration: const InputDecoration(hintText: "Post Title")),
-                TextField(controller: _contentController, decoration: const InputDecoration(hintText: "Post Content")),
-                ElevatedButton(onPressed: _addPost, child: const Text("Create Post & Link to User")),
+                TextField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(hintText: "Post Title"),
+                ),
+                TextField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(hintText: "Post Content"),
+                ),
+                ElevatedButton(
+                  onPressed: _addPost,
+                  child: const Text("Create Post & Link to User"),
+                ),
               ],
             ),
           ),
