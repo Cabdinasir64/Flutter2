@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'models/scheme2.dart';
-import 'package:flutter2/screens/isar_learning/search1.dart';
+import 'package:flutter2/screens/isar_learning/search2.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
@@ -16,7 +16,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: '/',
     routes: {
-      '/': (context) => Search1Screen(isar: isar),
+      '/': (context) => Search2Screen(isar: isar),
     },
   ));
 }
